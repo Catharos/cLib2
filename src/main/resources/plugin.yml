@@ -1,0 +1,4 @@
+name: cLib
+version: 1.0
+main: net.catharos.lib.cLib2
+authors: [SpaceEmotion, p000ison]
