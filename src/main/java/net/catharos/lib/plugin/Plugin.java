@@ -2,10 +2,9 @@ package net.catharos.lib.plugin;
 
 import java.util.logging.Logger;
 import net.catharos.lib.cLib;
-import net.catharos.lib.util.Arrays;
+import net.catharos.lib.util.ArrayUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -23,7 +22,7 @@ public abstract class Plugin extends JavaPlugin {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		// Execute command
-		cLib.getCommandManager().execute(sender, cmd.getName() + " " + Arrays.implode(args));
+		cLib.getCommandManager().execute(sender, cmd.getName() + " " + ArrayUtil.implode(args));
 		return true;
 	}
 	

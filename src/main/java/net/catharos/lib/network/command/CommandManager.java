@@ -1,12 +1,14 @@
 package net.catharos.lib.network.command;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.catharos.lib.plugin.Plugin;
+import net.catharos.lib.util.ArrayUtil;
+
 import org.bukkit.command.CommandSender;
 
 /**
@@ -14,17 +16,16 @@ import org.bukkit.command.CommandSender;
  * @version 1.0
  */
 public class CommandManager {
-	
-	protected final Map<CommandInformation, Method> commands;
-	
-	protected final Map<Method, Object> methods;
-	
+
+	/** Map of all stored commands (identifier -> command) */
+	protected final Map<String, CommandInformation> commands;
+
+	/** Map of all commands associated to plugins */
 	protected final Map<Plugin, List<CommandInformation>> plugins;
 	
 	
 	public CommandManager() {
-		commands = new HashMap<CommandInformation, Method>();
-		methods = new HashMap<Method, Object>();
+		commands = new HashMap<String, CommandInformation>();
 		plugins = new HashMap<Plugin, List<CommandInformation>>();
 	}
 	
@@ -32,12 +33,33 @@ public class CommandManager {
 	public void registerCommands(Object object) {
 		// TODO :D
 	}
+
+	public CommandInformation getCommand(String identifier) {
+		return commands.get(identifier);
+	}
 	
 	public void execute(CommandSender sender, String command) {
 		String[] args = parseArguments(command);
 		Map<String, String> flags = parseFlags(args);
 
-		// TODO Get correct command + execute
+		String identifier;
+		CommandInformation commandInfo;
+
+		for(int left = args.length; left > 0; left--) {
+			// Build command string
+			identifier = ArrayUtil.implode(Arrays.copyOfRange(args, 0, left));
+
+			commandInfo = getCommand(identifier);
+
+			// Execute command, if found
+			if(commandInfo != null) {
+				commandInfo.execute(sender, args, flags);
+
+				return;
+			}
+		}
+
+		// TODO Show error message
 	}
 
 
@@ -66,7 +88,12 @@ public class CommandManager {
 
 			// Save argument, create builder for next
 			if(next) {
-				args.add(current.toString().trim());
+				String arg = current.toString().trim();
+
+				// We don't need empty arguments!
+				if(arg.length() > 0) {
+					args.add(arg);
+				}
 
 				current = new StringBuilder();
 				next = false;

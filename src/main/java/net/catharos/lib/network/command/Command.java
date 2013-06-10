@@ -2,7 +2,6 @@ package net.catharos.lib.network.command;
 
 import java.util.Map;
 
-import net.catharos.lib.network.command.argument.Argument;
 import org.bukkit.command.CommandSender;
 
 /**

@@ -1,27 +1,58 @@
 package net.catharos.lib.network.command;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import net.catharos.lib.network.command.annotation.CommandHandler;
+
+import org.bukkit.command.CommandSender;
 
 /**
  *
  * @version 1.0
  */
 public final class CommandInformation {
-	
+
 	private final CommandHandler handler;
-	
+
+	private final Method method;
+
+	private final Object object;
+
 	private final CommandInformation parent;
-	
-	private List<CommandInformation> children;
-	
-	
-	protected CommandInformation(CommandHandler handler, CommandInformation parent) {
+
+	private final List<CommandInformation> children;
+
+	private final Argument[] argTypes;
+
+	protected CommandInformation(CommandHandler handler, Method method, Object object, CommandInformation parent) throws Exception {
+		// Call objects
 		this.handler = handler;
+		this.method = method;
+		this.object = object;
+
+		// Subcommand info
 		this.parent = parent;
-		
-		children = new ArrayList<CommandInformation>();
+		this.children = new ArrayList<CommandInformation>();
+
+		// Build argument list
+		Type[] types = method.getParameterTypes();
+		argTypes = new Argument[types.length];
+
+		for(int i = 0; i < argTypes.length; i++) {
+			Type type = types[i];
+			Argument arg = getArgumentFromType(type);
+
+			if(arg == null) {
+				throw new Exception("Invalid command argument type: " + type.getClass().getSimpleName());
+			}
+
+			argTypes[i] = arg;
+		}
 	}
 	
 	
@@ -50,14 +81,41 @@ public final class CommandInformation {
 	public boolean isListed() {
 		return handler.listed();
 	}
+
+	public CommandInformation getParent() {
+		return parent;
+	}
+
+	public void execute(CommandSender sender, String[] args, Map<String, String> flags) {
+		Object[] call = new Object[args.length + 1];
+		call[0] = new Command(this, sender, flags);
+
+		// Parse arguments
+		for(int i = 0; i < argTypes.length; i++) {
+			call[i + 1] = argTypes[i].parse(args[i]);
+		}
+
+		try {
+			method.invoke(object, call);
+
+		} catch (IllegalAccessException e) {
+			e.printStackTrace(); // TODO
+		} catch (InvocationTargetException e) {
+			e.printStackTrace(); // TODO
+		}
+	}
 	
 	
 	/* -------- Protected functions -------- */
-	
-	protected CommandInformation getParent() {
-		return parent;
+
+	private Argument getArgumentFromType(Type type) {
+		for(Argument arg : Argument.registered) {
+			if(arg.getType() == type.getClass()) return arg;
+		}
+
+		return null;
 	}
-	
+
 	protected void addChildren(CommandInformation child) {
 		children.add(child);
 	}

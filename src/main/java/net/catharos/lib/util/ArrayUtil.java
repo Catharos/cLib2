@@ -8,7 +8,7 @@ package net.catharos.lib.util;
  *
  * @version 1.0
  */
-public class Arrays {
+public class ArrayUtil {
 	
 	/**
 	 * Join array elements with a space character (' ')
