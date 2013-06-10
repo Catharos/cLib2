@@ -1,8 +1,9 @@
 package net.catharos.lib.network.command;
 
 import java.util.Map;
-import net.catharos.lib.network.CommandSender;
+
 import net.catharos.lib.network.command.argument.Argument;
+import org.bukkit.command.CommandSender;
 
 /**
  * A temporarly created command information object.

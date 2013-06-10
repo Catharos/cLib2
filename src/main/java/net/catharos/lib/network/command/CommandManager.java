@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.catharos.lib.network.CommandSender;
-import net.catharos.lib.network.ServerCommandSender;
+
 import net.catharos.lib.plugin.Plugin;
+import org.bukkit.command.CommandSender;
 
 /**
  *
@@ -21,15 +21,11 @@ public class CommandManager {
 	
 	protected final Map<Plugin, List<CommandInformation>> plugins;
 	
-	protected final ServerCommandSender serverCommandSender;
-	
 	
 	public CommandManager() {
 		commands = new HashMap<CommandInformation, Method>();
 		methods = new HashMap<Method, Object>();
 		plugins = new HashMap<Plugin, List<CommandInformation>>();
-		
-		serverCommandSender = new ServerCommandSender();
 	}
 	
 	
@@ -38,20 +34,66 @@ public class CommandManager {
 	}
 	
 	public void execute(CommandSender sender, String command) {
-		List<String> args = new ArrayList<String>();
-		Map<String, String> flags = new HashMap<String, String>();
-		
-		for(int i = 0; i < command.length(); i++) {
-			char c = command.charAt(i);
-			
-			// TODO Iterate and get args and flags
-		}
-		
+		String[] args = parseArguments(command);
+		Map<String, String> flags = parseFlags(args);
+
 		// TODO Get correct command + execute
 	}
-	
-	public ServerCommandSender getServerCommandSender() {
-		return serverCommandSender;
+
+
+	/* -------- Private methods -------- */
+
+	private String[] parseArguments(String command) {
+		List<String> args = new ArrayList<String>();
+
+		StringBuilder current = new StringBuilder();
+
+		boolean parantheses = false;
+		boolean next = false;
+
+		for(int i = 0; i < command.length(); i++) {
+			char c = command.charAt(i);
+
+			// Check for single-word arguments
+			if(c == ' ' && !parantheses) next = true;
+
+			// Check for paranthesed arguments
+			if(c == '"') {
+				if(parantheses) next = true;
+
+				parantheses = !parantheses;
+			}
+
+			// Save argument, create builder for next
+			if(next) {
+				args.add(current.toString().trim());
+
+				current = new StringBuilder();
+				next = false;
+
+				continue;
+			}
+
+			// Append to builder
+			current.append(c);
+		}
+
+		return args.toArray(new String[args.size()]);
+	}
+
+	private Map<String, String> parseFlags(String[] args) {
+		Map<String, String> flags = new HashMap<String, String>();
+
+		for(int i = 0; i < args.length; i++) {
+			String flag = args[i];
+
+			// All flags start with "--"
+			if(flag.startsWith("--") && (i + 1) < args.length) {
+				flags.put(flag.substring(2), args[i + 1]);
+			}
+		}
+
+		return flags;
 	}
 	
 }

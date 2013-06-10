@@ -2,14 +2,9 @@ package net.catharos.lib;
 
 import net.catharos.lib.event.BukkitEventListener;
 import net.catharos.lib.event.Events;
-import net.catharos.lib.network.ClientCommandSender;
-import net.catharos.lib.network.CommandSender;
 import net.catharos.lib.network.channel.ChannelManager;
 import net.catharos.lib.network.command.CommandManager;
 import net.catharos.lib.plugin.Plugin;
-import net.catharos.lib.util.Arrays;
-import org.bukkit.command.Command;
-import org.bukkit.entity.Player;
 
 /**
  * Main library class.

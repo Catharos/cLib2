@@ -8,3 +8,7 @@
 
 # Mac OSX Dust #
 *.DS_Store
+
+# IntelliJ
+/.idea/*
+/*.iml
