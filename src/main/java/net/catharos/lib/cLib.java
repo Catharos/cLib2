@@ -1,5 +1,7 @@
 package net.catharos.lib;
 
+import net.catharos.lib.event.BukkitEventListener;
+import net.catharos.lib.event.Events;
 import net.catharos.lib.network.channel.ChannelManager;
 import net.catharos.lib.plugin.Plugin;
 
@@ -30,6 +32,9 @@ public final class cLib extends Plugin {
 	
 	@Override
 	public void onEnable() {
+		// Register bukkit event listeners
+		Events.registerListener(new BukkitEventListener(), this);
+		
 		getLogger().info("cLib enabled!");
 	}
 	
