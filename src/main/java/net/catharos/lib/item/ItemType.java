@@ -7,48 +7,48 @@ package net.catharos.lib.item;
  * 
  * @version 1.0
  */
-public abstract class Type {
+public abstract class ItemType {
 	
 	/** All crafting tools, except swords. */
-	public static Type TOOL;
+	public static ItemType TOOL;
 	
 	/** All swords and bows */
-	public static Type WEAPON;
+	public static ItemType WEAPON;
 	
 	/** Item represents a block */
-	public static Type BLOCK;
+	public static ItemType BLOCK;
 	
 	/** Item is not a block */
-	public static Type ITEM;
+	public static ItemType ITEM;
 
 	/** All wooden tools and blocks */
-	public static Type WOOD;
+	public static ItemType WOOD;
 	
 	/** All stone tools and blocks */
-	public static Type STONE;
+	public static ItemType STONE;
 	
 	/** All golden tools and blocks */
-	public static Type GOLD;
+	public static ItemType GOLD;
 	
 	/** All iron tools and blocks */
-	public static Type IRON;
+	public static ItemType IRON;
 	
 	/** All diamond tools and blocks */
-	public static Type DIAMOND;
+	public static ItemType DIAMOND;
 	
 	/** All leather tools and leather item */
-	public static Type LEATHER;
+	public static ItemType LEATHER;
 	
 	/** All chained tools */
-	public static Type CHAINED;
+	public static ItemType CHAINED;
 	
 	/** Enchanted item */
-	public static Type ENCHANTED;
+	public static ItemType ENCHANTED;
 	
 	
 	// Initialize all predefined item types
 	static {
-		TOOL = new Type() {
+		TOOL = new ItemType() {
 			@Override
 			public boolean matchesType(Item item) {
 				switch(item.getMaterial()) {
@@ -75,7 +75,7 @@ public abstract class Type {
 			}
 		};
 		
-		WEAPON = new Type() {
+		WEAPON = new ItemType() {
 			@Override
 			public boolean matchesType(Item item) {
 				switch(item.getMaterial()) {
@@ -93,21 +93,21 @@ public abstract class Type {
 			}
 		};
 		
-		BLOCK = new Type() {
+		BLOCK = new ItemType() {
 			@Override
 			public boolean matchesType(Item item) {
 				return item.getMaterial().isBlock();
 			}
 		};
 		
-		ITEM = new Type() {
+		ITEM = new ItemType() {
 			@Override
 			public boolean matchesType(Item item) {
 				return !item.getMaterial().isBlock();
 			}
 		};
 		
-		WOOD = new Type() {
+		WOOD = new ItemType() {
 			@Override
 			public boolean matchesType(Item item) {
 				switch(item.getMaterial()) {
@@ -132,7 +132,7 @@ public abstract class Type {
 			}
 		};
 		
-		STONE = new Type() {
+		STONE = new ItemType() {
 			@Override
 			public boolean matchesType(Item item) {
 				switch(item.getMaterial()) {
@@ -152,7 +152,7 @@ public abstract class Type {
 			}
 		};
 		
-		GOLD = new Type() {
+		GOLD = new ItemType() {
 			@Override
 			public boolean matchesType(Item item) {
 				switch(item.getMaterial()) {
@@ -177,7 +177,7 @@ public abstract class Type {
 			}
 		};
 		
-		GOLD = new Type() {
+		GOLD = new ItemType() {
 			@Override
 			public boolean matchesType(Item item) {
 				switch(item.getMaterial()) {
@@ -202,7 +202,7 @@ public abstract class Type {
 			}
 		};
 		
-		IRON = new Type() {
+		IRON = new ItemType() {
 			@Override
 			public boolean matchesType(Item item) {
 				switch(item.getMaterial()) {
@@ -229,7 +229,7 @@ public abstract class Type {
 			}
 		};
 		
-		LEATHER = new Type() {
+		LEATHER = new ItemType() {
 			@Override
 			public boolean matchesType(Item item) {
 				switch(item.getMaterial()) {
@@ -246,7 +246,7 @@ public abstract class Type {
 			}
 		};
 		
-		CHAINED = new Type() {
+		CHAINED = new ItemType() {
 			@Override
 			public boolean matchesType(Item item) {
 				switch(item.getMaterial()) {
@@ -262,7 +262,7 @@ public abstract class Type {
 			}
 		};
 		
-		ENCHANTED = new Type() {
+		ENCHANTED = new ItemType() {
 			@Override
 			public boolean matchesType(Item item) {
 				return !item.getEnchantments().isEmpty();

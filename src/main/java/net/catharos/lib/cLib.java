@@ -2,8 +2,14 @@ package net.catharos.lib;
 
 import net.catharos.lib.event.BukkitEventListener;
 import net.catharos.lib.event.Events;
+import net.catharos.lib.network.ClientCommandSender;
+import net.catharos.lib.network.CommandSender;
 import net.catharos.lib.network.channel.ChannelManager;
+import net.catharos.lib.network.command.CommandManager;
 import net.catharos.lib.plugin.Plugin;
+import net.catharos.lib.util.Arrays;
+import org.bukkit.command.Command;
+import org.bukkit.entity.Player;
 
 /**
  * Main library class.
@@ -20,6 +26,10 @@ public final class cLib extends Plugin {
 	/** The channel manager instance */
 	private ChannelManager channelManager;
 	
+	/** The command executor instance */
+	private CommandManager commandManager;
+	
+	
 	@Override
 	public void onLoad() {
 		cLib.instance = this;
@@ -34,6 +44,9 @@ public final class cLib extends Plugin {
 	public void onEnable() {
 		// Register bukkit event listeners
 		Events.registerListener(new BukkitEventListener(), this);
+		
+		// Create command manager
+		commandManager = new CommandManager();
 		
 		getLogger().info("cLib enabled!");
 	}
@@ -53,6 +66,10 @@ public final class cLib extends Plugin {
 	 */
 	public static ChannelManager getChannelManager() {
 		return instance.channelManager;
+	}
+	
+	public static CommandManager getCommandManager() {
+		return instance.commandManager;
 	}
 	
 }

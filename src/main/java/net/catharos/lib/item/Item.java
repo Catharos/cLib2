@@ -159,10 +159,10 @@ public class Item {
 	 * @param types The {@link Type types} to check against.
 	 * @return True if the item matches the conditions.
 	 */
-	public boolean isOf(Type... types) {
+	public boolean isOf(ItemType... types) {
 		boolean match = true;
 		
-		for(Type type : types) {
+		for(ItemType type : types) {
 			match = match && type.matchesType(this);
 			
 			// No need to check any further
