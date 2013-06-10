@@ -1,4 +1,8 @@
+# Plugin description file
 name: cLib
-version: 1.0
-main: net.catharos.lib.cLib2
+description: Improved bukkit plugin library for Bukkit servers
+
+version: ${pom.version}-b${BUILD_NUMBER}
 authors: [SpaceEmotion, p000ison]
+
+main: net.catharos.lib.cLib2
