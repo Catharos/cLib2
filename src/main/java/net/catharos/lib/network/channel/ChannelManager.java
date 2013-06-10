@@ -53,12 +53,11 @@ public class ChannelManager implements PluginMessageListener {
 	public void sendMessage(Player player, PluginChannel channel) {
 		try {
 			// Create packet and output stream
-			ChannelPacket packet = channel.createPacket(player);
 			ByteArrayOutputStream data = new ByteArrayOutputStream();
 			DataOutputStream out = new DataOutputStream(data);
 			
 			// Write to stream
-			packet.write(out);
+			channel.send(player, out);
 			
 			// Send message
 			player.sendPluginMessage(plugin, channel.getName(), data.toByteArray());
@@ -79,14 +78,12 @@ public class ChannelManager implements PluginMessageListener {
 			
 			try {
 				PluginChannel channel = entry.getValue();
-				ChannelPacket packet = channel.createPacket(player);
 				
 				// Create data input stream
 				DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes));
-				packet.read(in);
 				
 				// Channel listens to read input
-				channel.listen(player, packet);
+				channel.listen(player, in);
 				
 				// Close stream again
 				in.close();

@@ -1,5 +1,7 @@
 package net.catharos.lib.network.channel;
 
+import java.io.DataInput;
+import java.io.DataOutput;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -10,7 +12,7 @@ import org.bukkit.entity.Player;
  * 
  * @version 1.0
  */
-public abstract class PluginChannel<T extends ChannelPacket> {
+public abstract class PluginChannel {
 	
 	/** The maximum channel name size */
 	public final static int MAX_NAME_SIZE = 16;
@@ -75,18 +77,22 @@ public abstract class PluginChannel<T extends ChannelPacket> {
 	public abstract String getName();
 	
 	/**
-	 * Creates a new packet for the specific player.
+	 * Writes data to the output message.
 	 * 
-	 * @return The newly created packet.
+	 * @param player The recieving player
+	 * @param message The message to append to
 	 */
-	public abstract T createPacket(Player player);
+	public abstract void send(Player player, DataOutput message);
 	
 	/**
 	 * Used whenever this channel is being used by recieving the
 	 * dedicated {@link ChannelPacket}.
 	 * 
+	 * Use to read the data from the input message.
+	 * 
+	 * @param sender The player who sent the message
 	 * @param incoming The recieved packet
 	 */
-	public abstract void listen(Player sender, T packet);
+	public abstract void listen(Player sender, DataInput message);
 	
 }
