@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.catharos.lib.network.command.annotation.CommandHandler;
-import net.catharos.lib.network.command.annotation.Flag;
 
 import org.bukkit.command.CommandSender;
 
@@ -32,8 +31,6 @@ public final class CommandInformation {
 	private final List<String> aliases;
 
 	private final Argument[] argTypes;
-	
-	private final CommandFlag[] flags;
 
 	protected CommandInformation(CommandHandler handler, Method method, Object object, CommandInformation parent) throws Exception {
 		// Call objects
@@ -44,12 +41,6 @@ public final class CommandInformation {
 		// Create alias list
 		this.aliases = new ArrayList<String>();
 		this.aliases.addAll(Arrays.asList(handler.aliases()));
-		
-		// Command flags
-		this.flags = new CommandFlag[handler.flags().length];
-		for(int i = 0; i < flags.length; i++) {
-			this.flags[i] = new CommandFlag(handler.flags()[i]);
-		}
 		
 		// Subcommand info
 		this.parent = parent;
@@ -97,6 +88,10 @@ public final class CommandInformation {
 	public boolean isListed() {
 		return handler.listed();
 	}
+	
+	public String[] getAvailableFlags() {
+		return handler.flags();
+	}
 
 	public CommandInformation getParent() {
 		return parent;
@@ -106,20 +101,10 @@ public final class CommandInformation {
 		return aliases;
 	}
 	
-	public Flag getFlag(String name) {
-		CommandFlag cmdFlag = getCommandFlag(name);
-		
-		if(cmdFlag != null) {
-			return cmdFlag.getFlag();
-		}
-		
-		return null;
-	}
-	
 	
 	/* -------- Protected functions -------- */
 	
-	protected boolean execute(CommandSender sender, String[] args, Map<CommandFlag, String> flags) throws Exception {
+	protected boolean execute(CommandSender sender, String[] args, Map<String, String> flags) throws Exception {
 		Object[] call = new Object[args.length + 1];
 		call[0] = new Command(this, sender, flags);
 
@@ -151,14 +136,6 @@ public final class CommandInformation {
 
 	protected void addChildren(CommandInformation child) {
 		children.add(child);
-	}
-	
-	protected CommandFlag getCommandFlag(String name) {
-		for(CommandFlag flag : flags) {
-			if(flag.getFlag().name().equalsIgnoreCase(name)) return flag;
-		}
-		
-		return null;
 	}
 	
 }

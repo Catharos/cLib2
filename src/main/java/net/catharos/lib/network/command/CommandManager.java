@@ -105,7 +105,7 @@ public class CommandManager {
 	
 	public void execute(CommandSender sender, String command) {
 		String[] args = parseArguments(command);
-		Map<String, String> flagStrings = parseFlags(args);
+		Map<String, String> flags = parseFlags(args);
 
 		String identifier;
 		CommandInformation commandInfo;
@@ -121,13 +121,11 @@ public class CommandManager {
 				boolean showHelp = args[args.length - 1].equals("?");
 				
 				if(!showHelp) try {
-					// Get correct flags
-					Map<CommandFlag, String> flags = new HashMap<CommandFlag, String>();
-					
-					for(String flag : flagStrings.keySet()) {
-						if(commandInfo.getFlag(flag) != null) continue;
-						
-						throw new Exception("Invalid flag: " + flag);
+					// Throw error when flag does not exist
+					for(String flag : flags.keySet()) {
+						if(Arrays.binarySearch(commandInfo.getAvailableFlags(), flag) < 0) {
+							throw new Exception("Invalid flag: " + flag);
+						}
 					}
 					
 					// Execute command
@@ -203,7 +201,7 @@ public class CommandManager {
 
 			// All flags start with "--"
 			if(flag.startsWith("--") && (i + 1) < args.length) {
-				flags.put(flag.substring(2), args[i + 1]);
+				flags.put(flag.substring(2).toLowerCase(), args[i + 1]);
 			}
 		}
 

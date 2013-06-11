@@ -33,7 +33,7 @@ public @interface CommandHandler {
 	public String[] aliases() default {};
 	
 	/** List of all command flags */
-	public Flag[] flags() default {};
+	public String[] flags() default {};
 	
 	/** Number of required arguments */
 	public int minArgs() default 0;

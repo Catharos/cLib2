@@ -20,7 +20,7 @@ public final class Command {
 	private final CommandSender sender;
 	
 	/** A key-value map holding all command flags */
-	private final Map<CommandFlag, String> flags;
+	private final Map<String, String> flags;
 	
 	/**
 	 * Creates a new command, ready to be executed.
@@ -29,7 +29,7 @@ public final class Command {
 	 * @param sender The sender who executes this command
 	 * @param flags A map with all command flags (can be empty)
 	 */
-	protected Command(CommandInformation info, CommandSender sender, Map<CommandFlag, String> flags) {
+	protected Command(CommandInformation info, CommandSender sender, Map<String, String> flags) {
 		this.info = info;
 		this.sender = sender;
 		this.flags = flags;
@@ -45,19 +45,24 @@ public final class Command {
 	}
 	
 	/**
+	 * Gets the raw flag content.
+	 * 
+	 * @param flag The flag name
+	 * @return The raw flag content string
+	 */
+	public String getFlag(String flag) {
+		return flags.get(flag.toLowerCase());
+	}
+	
+	/**
 	 * Gets a flag and parses it using the argument parser.
 	 * 
 	 * @param flag The flag name
-	 * @return The parsed flag content object, or null
+	 * @param type The argument type used for parsing
+	 * @return The parsed flag
 	 */
-	public Object getFlag(String flag) {
-		for(Map.Entry<CommandFlag, String> search : flags.entrySet()) {
-			if(search.getKey().getFlag().name().equalsIgnoreCase(flag)) {
-				return search.getKey().getArgument().parse(search.getValue());
-			}
-		}
-		
-		return null;
+	public <T> T getFlag(String flag, Argument<T> type) {
+		return type.parse(getFlag(flag));
 	}
 	
 	/**
