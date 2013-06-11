@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Target(value = ElementType.METHOD)
 public @interface CommandHandler {
 	
-	/** The command name */
+	/** The command name (only one word!) */
 	public String name();
 	
 	/** The command description */
@@ -23,8 +23,17 @@ public @interface CommandHandler {
 	/** The command (example) usage */
 	public String usage() default "";
 	
-	/** Needed permission to execute the command, if any */
+	/** Needed permission to execute the command */
 	public String permission() default "";
+	
+	/** The command's group */
+	public String group() default "";
+	
+	/** Aliases for this command */
+	public String[] aliases() default {};
+	
+	/** List of all command flags */
+	public Flag[] flags() default {};
 	
 	/** Number of required arguments */
 	public int minArgs() default 0;

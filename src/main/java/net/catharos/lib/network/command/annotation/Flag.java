@@ -20,4 +20,10 @@ public @interface Flag {
 	/** The flag name */
 	public String name();
 	
+	/** An optional flag description / usage */
+	public String description() default "";
+	
+	/** The flag type, as class (Has to be equal to the argument return type */
+	public Class type();
+	
 }

@@ -53,10 +53,10 @@ public abstract class Argument<T> {
 	}
 
 	/** Holds all available argument types */
-	protected static List<Argument> registered;
+	private static List<Argument> registered;
 
 	/** Holds the class type information */
-	protected Class<T> clazz;
+	private Class<T> clazz;
 
 
 	public Argument(Class<T> clazz) {
@@ -79,6 +79,14 @@ public abstract class Argument<T> {
 	 */
 	public Class<T> getType() {
 		return clazz;
+	}
+	
+	protected static Argument getArgumentByType(Class type) {
+		for(Argument arg : Argument.registered) {
+			if(arg.getType() == type) return arg;
+		}
+
+		return null;
 	}
 	
 	/**

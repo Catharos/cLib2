@@ -38,7 +38,7 @@ public class Item {
 	protected Map<Enchantment, Integer> enchantments;
 	
 	/**
-	 * Creates a new item hased on it's {@link Material}
+	 * Creates a new item hased on its {@link Material}
 	 * 
 	 * @param material The item's material
 	 */
@@ -56,7 +56,7 @@ public class Item {
 	}
 	
 	/**
-	 * Creates a new item based on it's {@link MaterialData}
+	 * Creates a new item based on its {@link MaterialData}
 	 * 
 	 * @param data The item's material data
 	 */
