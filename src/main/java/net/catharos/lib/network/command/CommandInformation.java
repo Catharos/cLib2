@@ -3,12 +3,13 @@ package net.catharos.lib.network.command;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import net.catharos.lib.network.command.annotation.CommandHandler;
+import net.catharos.lib.util.interfaces.Nameable;
+import net.catharos.lib.util.tree.TreeBranch;
+import net.catharos.lib.util.tree.TreeNode;
 
 import org.bukkit.command.CommandSender;
 
@@ -16,7 +17,7 @@ import org.bukkit.command.CommandSender;
  *
  * @version 1.0
  */
-public final class CommandInformation {
+public final class CommandInformation extends TreeNode implements Nameable {
 
 	private final CommandHandler handler;
 
@@ -24,27 +25,15 @@ public final class CommandInformation {
 
 	private final Object object;
 
-	private final CommandInformation parent;
-
-	private final List<CommandInformation> children;
-	
-	private final List<String> aliases;
-
 	private final Argument[] argTypes;
 
-	protected CommandInformation(CommandHandler handler, Method method, Object object, CommandInformation parent) throws Exception {
+	protected CommandInformation(CommandHandler handler, Method method, Object object, TreeBranch parent) throws Exception {
+		super(parent);
+		
 		// Call objects
 		this.handler = handler;
 		this.method = method;
 		this.object = object;
-		
-		// Create alias list
-		this.aliases = new ArrayList<String>();
-		this.aliases.addAll(Arrays.asList(handler.aliases()));
-		
-		// Subcommand info
-		this.parent = parent;
-		this.children = new ArrayList<CommandInformation>();
 		
 		// Build argument list
 		Type[] types = method.getParameterTypes();
@@ -59,6 +48,11 @@ public final class CommandInformation {
 			}
 
 			argTypes[i] = arg;
+		}
+		
+		// Create alias list
+		for(String alias : handler.aliases()) {
+			parent.addNode(alias, this);
 		}
 	}
 	
@@ -92,13 +86,9 @@ public final class CommandInformation {
 	public String[] getAvailableFlags() {
 		return handler.flags();
 	}
-
-	public CommandInformation getParent() {
-		return parent;
-	}
 	
-	public List<String> getAliases() {
-		return aliases;
+	public String[] getAliases() {
+		return handler.aliases();
 	}
 	
 	
@@ -132,10 +122,6 @@ public final class CommandInformation {
 		}
 		
 		return true;
-	}
-
-	protected void addChildren(CommandInformation child) {
-		children.add(child);
 	}
 	
 }

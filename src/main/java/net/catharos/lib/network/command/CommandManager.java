@@ -13,6 +13,8 @@ import java.util.Set;
 import net.catharos.lib.network.command.annotation.CommandHandler;
 import net.catharos.lib.plugin.Plugin;
 import net.catharos.lib.util.ArrayUtil;
+import net.catharos.lib.util.tree.TreeBranch;
+import net.catharos.lib.util.tree.TreeNode;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
@@ -21,17 +23,15 @@ import org.bukkit.command.PluginCommand;
  *
  * @version 1.0
  */
-public class CommandManager {
-
-	/** List of all stored commands */
-	protected final Set<CommandInformation> commands;
+public class CommandManager extends TreeBranch {
 
 	/** Map of all commands associated to plugins */
 	protected final Map<Plugin, Set<CommandInformation>> plugins;
 	
 	
 	public CommandManager() {
-		commands = new HashSet<CommandInformation>();
+		super("CommandManager", null); // The manager doesn't have a parent
+		
 		plugins = new HashMap<Plugin, Set<CommandInformation>>();
 	}
 	
@@ -59,7 +59,9 @@ public class CommandManager {
 				
 				// Create command information
 				CommandInformation command = new CommandInformation(handler, method, object, null);
-				commands.add(command);
+				String[] split = command.getName().split(" ");
+				TreeBranch branch = createBranch(Arrays.copyOfRange(split, 0, split.length - 2));
+				branch.addNode(split[split.length - 1], command);
 				
 				// Add command to bukkit, if needed
 				// TODO: This needs some more work as well ...
@@ -88,16 +90,10 @@ public class CommandManager {
 	}
 
 	public CommandInformation getCommand(String identifier) {
-		for(CommandInformation command : commands) {
-			// Check command name
-			if(command.getName().equalsIgnoreCase(identifier)) {
-				return command;
-			}
-			
-			// Check command aliases
-			if(command.getAliases().contains(identifier)) {
-				return command;
-			}
+		TreeNode node = getNode(identifier.toLowerCase().split(" "));
+		
+		if(node instanceof CommandInformation) {
+			return (CommandInformation) node;
 		}
 		
 		return null;
@@ -107,41 +103,44 @@ public class CommandManager {
 		String[] args = parseArguments(command);
 		Map<String, String> flags = parseFlags(args);
 
-		String identifier;
-		CommandInformation commandInfo;
-
-		for(int left = args.length; left > 0; left--) {
-			// Build command string
-			identifier = ArrayUtil.implode(Arrays.copyOfRange(args, 0, left));
-
-			commandInfo = getCommand(identifier);
-
-			// Command found
-			if(commandInfo != null) {
-				boolean showHelp = args[args.length - 1].equals("?");
-				
-				if(!showHelp) try {
-					// Throw error when flag does not exist
-					for(String flag : flags.keySet()) {
-						if(Arrays.binarySearch(commandInfo.getAvailableFlags(), flag) < 0) {
-							throw new Exception("Invalid flag: " + flag);
-						}
-					}
-					
-					// Execute command
-					showHelp = commandInfo.execute(sender, args, flags);
-					
-				} catch (Exception ex) {
-					// TODO Show error message
-				}
-				
-				// Show help message
-				if(showHelp) {
-					// TODO :D
-				}
-
-				return;
+		CommandInformation commandInfo = null;
+		TreeBranch node = this;
+		
+		for(String arg : args) {
+			TreeNode n = node.getNode(arg);
+			if((n != null) && (n instanceof CommandInformation)) {
+				commandInfo = (CommandInformation) n;
+				break;
 			}
+			
+			node = (TreeBranch) n;
+		}
+
+		// When command could be found, try to execute
+		if(commandInfo != null) {
+			boolean showHelp = args[args.length - 1].equals("?");
+
+			if(!showHelp) try {
+				// Throw error when flag does not exist
+				for(String flag : flags.keySet()) {
+					if(Arrays.binarySearch(commandInfo.getAvailableFlags(), flag) < 0) {
+						throw new Exception("Invalid flag: " + flag);
+					}
+				}
+
+				// Execute command
+				showHelp = commandInfo.execute(sender, args, flags);
+
+			} catch (Exception ex) {
+				// TODO Show error message
+			}
+
+			// Show help message
+			if(showHelp) {
+				// TODO :D
+			}
+
+			return;
 		}
 
 		// TODO Show error message
@@ -221,7 +220,7 @@ public class CommandManager {
 		bukkit.setPermission(command.getPermission());
 		
 		// Add command aliases
-		bukkit.setAliases(command.getAliases());
+		// bukkit.setAliases(Arrays.asList(command.getAliases()));
 		
 		// Add to bukkit
 		// TODO: Find simple command map and register there

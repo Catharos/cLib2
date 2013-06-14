@@ -2,6 +2,9 @@ package net.catharos.lib.network.channel;
 
 import java.io.DataInput;
 import java.io.DataOutput;
+
+import net.catharos.lib.util.interfaces.Nameable;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -12,7 +15,7 @@ import org.bukkit.entity.Player;
  * 
  * @version 1.0
  */
-public abstract class PluginChannel {
+public abstract class PluginChannel implements Nameable {
 	
 	/** The maximum channel name size */
 	public final static int MAX_NAME_SIZE = 16;
@@ -67,14 +70,6 @@ public abstract class PluginChannel {
 		// Send message
 		manager.sendMessage(reciever, this);
 	}
-	
-	/**
-	 * Returns the name of this channel.<br />
-	 * <b>Remember: The maximum number of characters for a name is 16!</b>
-	 * 
-	 * @return The channel name
-	 */
-	public abstract String getName();
 	
 	/**
 	 * Writes data to the output message.
