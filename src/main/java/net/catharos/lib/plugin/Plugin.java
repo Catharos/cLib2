@@ -19,6 +19,9 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public abstract class Plugin extends JavaPlugin {
 	
+	/** The default name for the config file */
+	public final static String CONFIG_FILE = "config.yml";
+	
 	/** The translator instance */
 	private final Translator translator = Translator.getInstance();
 	
@@ -27,12 +30,17 @@ public abstract class Plugin extends JavaPlugin {
 	
 	@Override
 	public void onLoad() {
+		// Add translations
 		try {
-			// Add translations
 			translator.addTranslations(this);
 			
 		} catch (IOException ex) {
 			getLogger().log(Level.WARNING, "Could not add plugin translations", ex);
+		}
+		
+		// Copy config file if available
+		if(getResource(CONFIG_FILE) != null) {
+			saveResource(CONFIG_FILE, false);
 		}
 	}
 	
