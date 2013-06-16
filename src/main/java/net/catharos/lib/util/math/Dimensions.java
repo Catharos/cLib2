@@ -67,4 +67,11 @@ public class Dimensions {
 		return a.getZ() > b.getZ() ? a.getZ() : b.getZ();
 	}
 	
+	public boolean contains(Vector3D vec) {
+		boolean min = getMinX() >= vec.getX() && getMinY() >= vec.getY() && getMinZ() >= vec.getZ();
+		boolean max = getMaxX() >= vec.getX() && getMaxY() >= vec.getY() && getMaxZ() >= vec.getZ();
+		
+		return min && max;
+	}
+	
 }
