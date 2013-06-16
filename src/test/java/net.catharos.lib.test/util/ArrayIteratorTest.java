@@ -36,7 +36,7 @@ public class ArrayIteratorTest {
         iterator.next();
         iterator.remove();
         iterator.next();
-        iterator.next();
+		iterator.next();
     }
 
     @Test
