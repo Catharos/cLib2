@@ -12,3 +12,4 @@
 # IntelliJ
 /.idea/*
 /*.iml
+/target/

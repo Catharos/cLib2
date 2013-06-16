@@ -1,7 +1,10 @@
 package net.catharos.lib.plugin;
 
+import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.catharos.lib.cLib;
+import net.catharos.lib.network.chat.locale.Translator;
 import net.catharos.lib.util.ArrayUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -16,8 +19,22 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public abstract class Plugin extends JavaPlugin {
 	
+	/** The translator instance */
+	private final Translator translator = Translator.getInstance();
+	
 	/** Custom plugin log file */
 	private PluginLog log;
+	
+	@Override
+	public void onLoad() {
+		try {
+			// Add translations
+			translator.addTranslations(this);
+			
+		} catch (IOException ex) {
+			getLogger().log(Level.WARNING, "Could not add plugin translations", ex);
+		}
+	}
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
